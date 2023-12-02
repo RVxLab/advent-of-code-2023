@@ -1,14 +1,110 @@
-pub fn add(left: usize, right: usize) -> usize {
-    left + right
+use std::collections::HashMap;
+use std::fs::File;
+use std::io::{BufRead, BufReader};
+
+pub fn day01_a() -> u32 {
+    let file = match File::open("input.txt") {
+        Ok(f) => f,
+        Err(e) => panic!("{}", e),
+    };
+
+    let read_buffer = BufReader::new(&file);
+
+    read_buffer
+        .lines()
+        .filter_map(|line| line.ok())
+        .filter_map(remove_non_digits)
+        .filter_map(line_to_code)
+        .sum()
 }
+
+pub fn day01_b() -> u32 {
+    let file = match File::open("input.txt") {
+        Ok(f) => f,
+        Err(e) => panic!("{}", e),
+    };
+
+    let read_buffer = BufReader::new(&file);
+
+    read_buffer
+        .lines()
+        .filter_map(|line| line.ok())
+        .map(|line| {
+            let mut digits = String::new();
+            let mut chars = line.chars();
+
+            loop {
+                if let Some(digit) = chars.clone().peekable().peek().filter(|c| c.is_digit(10)) {
+                    digits.push(digit.to_owned().to_owned());
+                } else {
+                    let mut spelled_digits = HashMap::new();
+                    spelled_digits.insert("one", '1');
+                    spelled_digits.insert("two", '2');
+                    spelled_digits.insert("three", '3');
+                    spelled_digits.insert("four", '4');
+                    spelled_digits.insert("five", '5');
+                    spelled_digits.insert("six", '6');
+                    spelled_digits.insert("seven", '7');
+                    spelled_digits.insert("eight", '8');
+                    spelled_digits.insert("nine", '9');
+
+                    let current = chars.as_str();
+
+                    for (key, digit) in spelled_digits {
+                        if current.starts_with(key) {
+                            digits.push(digit);
+
+                            continue;
+                        }
+                    }
+                }
+
+                if chars.next().is_none() {
+                    break;
+                }
+            }
+
+            digits
+        })
+        .filter_map(remove_non_digits)
+        .filter_map(line_to_code)
+        .sum()
+}
+
+fn line_to_code(line: String) -> Option<u32> {
+    let mut chars = line.chars();
+    let first = chars.nth(0).unwrap();
+    let last = chars.last().unwrap_or(first);
+
+    let mut code = first.to_string();
+    code.push(last);
+    code.parse::<u32>().ok()
+}
+
+fn remove_non_digits(line: String) -> Option<String> {
+    let digits = line.chars().filter(|char| char.is_digit(10)).collect::<String>();
+
+    match digits.is_empty() {
+        true => None,
+        false => Some(digits),
+    }
+}
+
+
 
 #[cfg(test)]
 mod tests {
-    use super::*;
+    use crate::*;
 
     #[test]
-    fn it_works() {
-        let result = add(2, 2);
-        assert_eq!(result, 4);
+    fn test_day01_a() {
+        let solution = day01_a();
+        println!("day01 a: {}", solution);
+    }
+
+    #[test]
+    fn test_day01_b() {
+        let solution = day01_b();
+        println!("day01 b: {}", solution);
     }
 }
