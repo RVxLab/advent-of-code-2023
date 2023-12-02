@@ -90,8 +90,6 @@ fn remove_non_digits(line: String) -> Option<String> {
     }
 }
 
-
-
 #[cfg(test)]
 mod tests {
     use crate::*;
