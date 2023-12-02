@@ -1,32 +1,25 @@
+use anyhow::Result;
 use std::collections::HashMap;
 use std::fs::File;
 use std::io::{BufRead, BufReader};
 
-pub fn day01_a() -> u32 {
-    let file = match File::open("input.txt") {
-        Ok(f) => f,
-        Err(e) => panic!("{}", e),
-    };
+pub fn day01_a(input: &File) -> Result<String> {
+    let read_buffer = BufReader::new(input);
 
-    let read_buffer = BufReader::new(&file);
-
-    read_buffer
+    let code: u32 = read_buffer
         .lines()
         .filter_map(|line| line.ok())
         .filter_map(remove_non_digits)
         .filter_map(line_to_code)
-        .sum()
+        .sum();
+
+    Ok(code.to_string())
 }
 
-pub fn day01_b() -> u32 {
-    let file = match File::open("input.txt") {
-        Ok(f) => f,
-        Err(e) => panic!("{}", e),
-    };
+pub fn day01_b(input: &File) -> Result<String> {
+    let read_buffer = BufReader::new(input);
 
-    let read_buffer = BufReader::new(&file);
-
-    read_buffer
+    let code: u32 = read_buffer
         .lines()
         .filter_map(|line| line.ok())
         .map(|line| {
@@ -68,7 +61,9 @@ pub fn day01_b() -> u32 {
         })
         .filter_map(remove_non_digits)
         .filter_map(line_to_code)
-        .sum()
+        .sum();
+
+    Ok(code.to_string())
 }
 
 fn line_to_code(line: String) -> Option<u32> {
@@ -82,7 +77,10 @@ fn line_to_code(line: String) -> Option<u32> {
 }
 
 fn remove_non_digits(line: String) -> Option<String> {
-    let digits = line.chars().filter(|char| char.is_digit(10)).collect::<String>();
+    let digits = line
+        .chars()
+        .filter(|char| char.is_digit(10))
+        .collect::<String>();
 
     match digits.is_empty() {
         true => None,
@@ -96,13 +94,15 @@ mod tests {
 
     #[test]
     fn test_day01_a() {
-        let solution = day01_a();
+        let file = File::open("../../inputs/day01.txt").unwrap();
+        let solution = day01_a(&file).unwrap();
         println!("day01 a: {}", solution);
     }
 
     #[test]
     fn test_day01_b() {
-        let solution = day01_b();
+        let file = File::open("../../inputs/day01.txt").unwrap();
+        let solution = day01_b(&file).unwrap();
         println!("day01 b: {}", solution);
     }
 }

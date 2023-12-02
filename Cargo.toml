@@ -4,6 +4,9 @@ resolver = "2"
 
 members = [
     "crates/day01",
-    "crates/day02"
+    "crates/day02",
+    "crates/runner"
 ]
 
+[workspace.dependencies]
+anyhow = "1.0.75"

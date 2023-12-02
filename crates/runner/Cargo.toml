@@ -1,5 +1,5 @@
 [package]
-name = "day01"
+name = "runner"
 version = "0.1.0"
 edition = "2021"
 
@@ -7,3 +7,5 @@ edition = "2021"
 
 [dependencies]
 anyhow = { workspace = true }
+day01 = { path = "../day01" }
+day02 = { path = "../day02" }

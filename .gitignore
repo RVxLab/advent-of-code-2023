@@ -1,2 +1,2 @@
-crates/**/input.txt
+inputs/*.txt
 target/
